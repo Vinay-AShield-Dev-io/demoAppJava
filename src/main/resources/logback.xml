@@ -1,0 +1,84 @@
+<configuration>
+	<property name="LOG_PATTERN"
+		value="%date{yyyy-MM-dd HH:mm:ss.SSS}%5p[%t][%C{1}:%L] %m%n" />
+	<property name="logpath" value="/ashield/auth/logs" />
+	<property name="cdrpath" value="/ashield/auth/cdrs" />
+	<property name="hostname1" value="_localhost" />
+	<property name="LOG_PATTERN_CDR" value="%m%n" />
+
+	<appender name="authlog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logpath}/demoapp_${hostname1}.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>
+				${logpath}/demoapp_${hostname1}.log.%d{yyyy-MM-dd-HH}
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				${LOG_PATTERN}
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="autherrorlog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logpath}/demoapp_${hostname1}.err</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${logpath}/demoapp_${hostname1}.err.%d{yyyy-MM-dd-HH}
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="cdrlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${cdrpath}/demoapp${hostname1}.txt</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern> ${cdrpath}/demoapp_${hostname1}.txt.%d{yyyy-MM-dd-HH} </fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOG_PATTERN_CDR}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logpath}/ll/abc.txt</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logpath}/ll/abc.txt.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN_CDR}</pattern>
+        </encoder>
+    </appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	
+	</root>
+
+	<logger name="com.sample.CDRLogging.Debug" level="DEBUG">
+		<appender-ref ref="authlog" />
+	</logger>
+
+	<logger name="com.sample.CDRLogging.Error" level="ERROR">
+		<appender-ref ref="autherrorlog" />
+	</logger>
+
+	<logger name="com.sample.CDRLogging.CDRLoggingThread" level="INFO">
+		<appender-ref ref="cdrlog" />
+	</logger>
+
+</configuration>
