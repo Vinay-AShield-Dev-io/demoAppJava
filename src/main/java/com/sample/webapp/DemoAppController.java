@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sample.CDRLogging.CDRLoggingThread;
+import com.sample.logger.Logging;
 import com.sample.datapojo.Users;
 import com.sample.dbservices.DBService;
 
@@ -30,12 +30,14 @@ class RegistrationRequestObjectBody {
 
 @Controller
 public class DemoAppController {
+	
 	@Autowired
 	DBService demoDBServices;
-
+	
 	@PostMapping("/login")
 	@ResponseBody
 	String loginUser(@RequestBody LoginRequestObjectBody body) {
+		Logging log = new Logging();
 		try {
 			String username = body.getUsername();
 			String pass = body.getPassword();
@@ -44,17 +46,23 @@ public class DemoAppController {
 				String passHash = user.getHashPass();
 				if (passHash.equals(pass)) {
 					user.getAge();
-					CDRLoggingThread.write("User Logged in");
+					log.setInfoMessage("Authcontroller", " loginUser ", "User " + username + " was Logged in");
+					log.start();
 					return "Welcome back " + username;
 				} else {
-					CDRLoggingThread.write("Incorrect Username or Password");
+					log.setInfoMessage("Authcontroller", "loginUser",
+							"User " + username + "Incorrect Username or Password");
+					log.start();
 					return "Incorrect Username or Password";
 				}
 			} else {
-				CDRLoggingThread.write("User not found");
+				log.setInfoMessage("Authcontroller", " loginUser ", "User " + username + "User not found");
+				log.start();
 				return "User not found";
 			}
 		} catch (Exception exp) {
+			log.setErrorMessage("AppController.java ", "Login", ""+exp);
+			log.start();
 			System.out.println(exp);
 			return "Sorry, Something went wrong!";
 		}
@@ -63,6 +71,7 @@ public class DemoAppController {
 	@PostMapping("/register")
 	@ResponseBody
 	String registerUser(@RequestBody RegistrationRequestObjectBody body) {
+		Logging log = new Logging();
 		try {
 			String age = body.getAge();
 			String username = body.getUsername();
@@ -86,7 +95,9 @@ public class DemoAppController {
 			u.setHashPass(pass);
 			u.setAge(parsedAge);
 			demoDBServices.saveUserEntity(u);
-			CDRLoggingThread.write("Registration request for " + username + " was " + "successful");
+			log.setInfoMessage("Authcontroller", "loginUser",
+					"Registration request for " + username + " was " + "successful");
+			log.start();
 			return "token";
 		} catch (Exception exp) {
 			System.out.println(exp);

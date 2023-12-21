@@ -69,15 +69,15 @@
 	
 	</root>
 
-	<logger name="com.sample.CDRLogging.Debug" level="DEBUG">
+	<logger name="com.sample.logger.Log" level="DEBUG">
 		<appender-ref ref="authlog" />
 	</logger>
 
-	<logger name="com.sample.CDRLogging.Error" level="ERROR">
+	<logger name="com.sample.logger.Error" level="ERROR">
 		<appender-ref ref="autherrorlog" />
 	</logger>
 
-	<logger name="com.sample.CDRLogging.CDRLoggingThread" level="INFO">
+	<logger name="com.sample.logger.Log" level="INFO">
 		<appender-ref ref="cdrlog" />
 	</logger>
 
